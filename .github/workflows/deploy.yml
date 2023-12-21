@@ -1,6 +1,7 @@
 on:
-    merge_group:
-        types: [checks_requested]
+  workflow_dispatch:
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   deploy:
