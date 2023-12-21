@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Say hello word
+      - name: fail
         run: |
-            echo "Hello word"
+            false
