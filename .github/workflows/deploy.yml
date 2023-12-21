@@ -1,5 +1,5 @@
 on:
-  workflow_dispatch:
+  pull_request:
   merge_group:
     types: [checks_requested]
 
@@ -9,7 +9,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: fail
+      
+      # Paso para comprobar si el evento es una pull request
+      - name: Check if event is a pull request
+        id: check_pr
         run: |
-            false
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "Es una pull request."
+            echo "::set-output name=is_pr::true"
+          else
+            echo "No es una pull request."
+            echo "::set-output name=is_pr::false"
+          fi
+
+      # Paso para hacer algo basado en la condición anterior
+      - name: Conditional step
+        if: steps.check_pr.outputs.is_pr == 'true'
+        run: |
+          echo "El evento es una pull request, continuando con la acción..."
+          # Aquí puedes agregar comandos adicionales que quieres ejecutar para pull requests
+
+      - name: Fail if not a pull request
+        if: steps.check_pr.outputs.is_pr == 'false'
+        run: |
+          echo "El evento no es una pull request, fallando intencionadamente..."
+          false
